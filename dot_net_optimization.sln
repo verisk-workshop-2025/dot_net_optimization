@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIngestorApp.FileProcess
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIngestorApp.Benchmark", "src\FileIngestorApp.Benchmark\FileIngestorApp.Benchmark.csproj", "{FCB2F7A5-7C31-458F-B32D-56AF23F63783}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{CE22A3F5-3F8A-4419-95B5-CA4615CE8ACA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleThreading", "ExampleThreading\ExampleThreading.csproj", "{BC4FE96F-9FAB-4021-A334-B3A22AF2F6CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,10 @@ Global
 		{FCB2F7A5-7C31-458F-B32D-56AF23F63783}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCB2F7A5-7C31-458F-B32D-56AF23F63783}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCB2F7A5-7C31-458F-B32D-56AF23F63783}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC4FE96F-9FAB-4021-A334-B3A22AF2F6CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC4FE96F-9FAB-4021-A334-B3A22AF2F6CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC4FE96F-9FAB-4021-A334-B3A22AF2F6CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC4FE96F-9FAB-4021-A334-B3A22AF2F6CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +52,7 @@ Global
 		{F985B3D1-C4AB-411D-B7F1-71A2A2F9433C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{15ECBCAD-9949-48A4-EC83-5E4E9181A91D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{FCB2F7A5-7C31-458F-B32D-56AF23F63783} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{BC4FE96F-9FAB-4021-A334-B3A22AF2F6CB} = {CE22A3F5-3F8A-4419-95B5-CA4615CE8ACA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E959A108-5421-41C9-9B5B-BC28681BDA48}
