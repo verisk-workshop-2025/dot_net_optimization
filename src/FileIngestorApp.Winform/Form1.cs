@@ -20,7 +20,7 @@ namespace FileIngestorApp.Winform
                 if (file.Directory?.Exists == false)
                 {
                     file.Directory.Create();
-                    return;
+                    //return;
                 }
                 File.WriteAllLines(file.FullName, GeneratePersonData(size).Select(x => JsonConvert.SerializeObject(x)));
                 MessageBox.Show("File created successfully");
