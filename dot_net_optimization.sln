@@ -17,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{CE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleThreading", "ExampleThreading\ExampleThreading.csproj", "{BC4FE96F-9FAB-4021-A334-B3A22AF2F6CB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SuperMarket_Data", "SuperMarket_Data", "{36573611-CEB4-4F2A-B3C6-D3CC7883B84E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMarketLogGenerator", "BBSMLogGenerator\SuperMarketLogGenerator.csproj", "{B05316AC-1B8C-4B74-87AD-93DA63DDEBBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,10 @@ Global
 		{BC4FE96F-9FAB-4021-A334-B3A22AF2F6CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC4FE96F-9FAB-4021-A334-B3A22AF2F6CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC4FE96F-9FAB-4021-A334-B3A22AF2F6CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B05316AC-1B8C-4B74-87AD-93DA63DDEBBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B05316AC-1B8C-4B74-87AD-93DA63DDEBBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B05316AC-1B8C-4B74-87AD-93DA63DDEBBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B05316AC-1B8C-4B74-87AD-93DA63DDEBBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +61,7 @@ Global
 		{15ECBCAD-9949-48A4-EC83-5E4E9181A91D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{FCB2F7A5-7C31-458F-B32D-56AF23F63783} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{BC4FE96F-9FAB-4021-A334-B3A22AF2F6CB} = {CE22A3F5-3F8A-4419-95B5-CA4615CE8ACA}
+		{B05316AC-1B8C-4B74-87AD-93DA63DDEBBE} = {36573611-CEB4-4F2A-B3C6-D3CC7883B84E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E959A108-5421-41C9-9B5B-BC28681BDA48}

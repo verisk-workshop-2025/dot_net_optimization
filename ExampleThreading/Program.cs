@@ -20,7 +20,6 @@ namespace ExampleThreading
         public static void SingleThreadExecution()
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-
             DoWork("Task 1 - Main");
             DoWork("Task 2 - Main");
 
@@ -45,7 +44,7 @@ namespace ExampleThreading
             Console.WriteLine($"\nTime taken (Multi Thread): {stopwatch.ElapsedMilliseconds} ms");
         }
 
-        private static void DoWork(string taskName)
+        public static void DoWork(string taskName)
         {
             for (int i = 0; i < 5; i++)
             {
@@ -53,5 +52,6 @@ namespace ExampleThreading
                 Thread.Sleep(200); // Simulating time-consuming work....
             }
         }
+
     }
 }
