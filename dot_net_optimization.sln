@@ -7,11 +7,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIngestorApp.Core", "src\FileIngestorApp.Core\FileIngestorApp.Core.csproj", "{EB3F5DBA-44A5-476C-B5AB-BD5415E1BDF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIngestorApp.Winform", "src\FileIngestorApp.Winform\FileIngestorApp.Winform.csproj", "{F985B3D1-C4AB-411D-B7F1-71A2A2F9433C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIngestorApp.FileProcessor", "src\FileIngestorApp.FileProcessor\FileIngestorApp.FileProcessor.csproj", "{15ECBCAD-9949-48A4-EC83-5E4E9181A91D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIngestorApp.Benchmark", "src\FileIngestorApp.Benchmark\FileIngestorApp.Benchmark.csproj", "{FCB2F7A5-7C31-458F-B32D-56AF23F63783}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BatchProcessing", "BatchProcessing", "{DC0D19E7-67C0-410B-A8D6-8CEE99E5535D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Threading", "Threading\Threading.csproj", "{5CD059F8-4D04-4BC3-BF23-9B5F0420B5C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +25,6 @@ Global
 		{EB3F5DBA-44A5-476C-B5AB-BD5415E1BDF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB3F5DBA-44A5-476C-B5AB-BD5415E1BDF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB3F5DBA-44A5-476C-B5AB-BD5415E1BDF2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F985B3D1-C4AB-411D-B7F1-71A2A2F9433C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F985B3D1-C4AB-411D-B7F1-71A2A2F9433C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F985B3D1-C4AB-411D-B7F1-71A2A2F9433C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F985B3D1-C4AB-411D-B7F1-71A2A2F9433C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15ECBCAD-9949-48A4-EC83-5E4E9181A91D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{15ECBCAD-9949-48A4-EC83-5E4E9181A91D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15ECBCAD-9949-48A4-EC83-5E4E9181A91D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,15 +33,19 @@ Global
 		{FCB2F7A5-7C31-458F-B32D-56AF23F63783}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCB2F7A5-7C31-458F-B32D-56AF23F63783}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCB2F7A5-7C31-458F-B32D-56AF23F63783}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CD059F8-4D04-4BC3-BF23-9B5F0420B5C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CD059F8-4D04-4BC3-BF23-9B5F0420B5C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CD059F8-4D04-4BC3-BF23-9B5F0420B5C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CD059F8-4D04-4BC3-BF23-9B5F0420B5C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB3F5DBA-44A5-476C-B5AB-BD5415E1BDF2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{F985B3D1-C4AB-411D-B7F1-71A2A2F9433C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{15ECBCAD-9949-48A4-EC83-5E4E9181A91D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{FCB2F7A5-7C31-458F-B32D-56AF23F63783} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{5CD059F8-4D04-4BC3-BF23-9B5F0420B5C3} = {DC0D19E7-67C0-410B-A8D6-8CEE99E5535D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E959A108-5421-41C9-9B5B-BC28681BDA48}
