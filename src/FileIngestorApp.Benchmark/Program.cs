@@ -3,11 +3,16 @@
 #if DEBUG
 
 var summary1 = new FileProcessorBenchmark();
-var x = summary1.Legacy();
-Console.WriteLine("Legacy: " + x);
+summary1.N = 50000; // Set the number of records for testing
+summary1.Setup();
 
-var y = summary1.Optimized();
-Console.WriteLine("Optimized: " + y);
+
+Console.WriteLine("Calling.. Legacy");
+summary1.Legacy();
+
+
+Console.WriteLine("Calling..  Optimized");
+summary1.Optimized();
 
 #else
 

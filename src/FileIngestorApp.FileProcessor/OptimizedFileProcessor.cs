@@ -1,70 +1,69 @@
 ﻿using FileIngestorApp.Core.Contracts;
 using FileIngestorApp.Core.Models;
-using Newtonsoft.Json;
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Text;
+using System.Text.Json;
 
 namespace FileIngestorApp.FileProcessor;
 public class OptimizedFileProcessor : IFileProcessor
 {
-    public int GetHighEarnersCount(string filePath, int highSalary)
+    public void ProcessBranchesData(string inputDirectory, string outputDirectory)
     {
-        int count = 0;
-
-        Parallel.ForEach(File.ReadAllLines(filePath), json =>
-        {
-            if (string.IsNullOrEmpty(json))
-            {
-                return;
-            }
-            Employee deserialized = JsonConvert.DeserializeObject<Employee>(json) ?? throw new NullReferenceException();
-            if (deserialized.Salary >= highSalary)
-            {
-                Interlocked.Increment(ref count);
-            }
-        });
-
-        return count;
+        //var sw = Stopwatch.StartNew();
+        ProcessBranchesDataAsync(inputDirectory, outputDirectory).Wait();
+        //sw.Stop();
+        //Console.WriteLine($"Total time with multiple thread: {sw.ElapsedMilliseconds} ms");
+             
     }
 
-    public int GetHighEarnersCount2(string filePath, int highSalary)
+    private async Task ProcessBranchesDataAsync(string inputDirectory, string outputDirectory)
     {
-        string text = File.ReadAllText(filePath);
-        string[] lines = text.Split(Environment.NewLine);
-        int count = 0;
+        var productFiles = Directory.GetFiles(inputDirectory, "*_products.jl");
+        var branchCodes = productFiles
+            .Select(f => Path.GetFileName(f).Split('_')[0])
+            .Distinct()
+            .ToList();
 
-        // parsing the employees
-        foreach (string json in lines)
+        int maxThreads = Environment.ProcessorCount; 
+        var semaphore = new SemaphoreSlim(maxThreads);
+        var tasks = new List<Task>();
+        var logs = new ConcurrentBag<string>();
+
+        foreach (var branchCode in branchCodes)
         {
-            if (string.IsNullOrEmpty(json))
+            await semaphore.WaitAsync();
+
+            var task = Task.Run(() =>
             {
-                continue;
-            }
-            Employee deserialized = JsonConvert.DeserializeObject<Employee>(json) ?? throw new NullReferenceException();
-            if (deserialized.Salary >= highSalary)
-            {
-                count++;
-            }
+                try
+                {
+                    var sw = Stopwatch.StartNew();
+                    new ProcessBatch().Execute(branchCode, inputDirectory, outputDirectory);
+                    sw.Stop();
+                    logs.Add($"Processed branch {branchCode} in {sw.ElapsedMilliseconds} ms");
+                }
+                catch (Exception ex)
+                {
+                    logs.Add($"Error processing branch {branchCode}: {ex.Message}");
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
+
+            tasks.Add(task);
         }
 
-        return count;
-    }
-    public int GetHighEarnersCount3(string filePath, int highSalary)
-    {
-        int count = 0;
+        await Task.WhenAll(tasks);
 
-        // parsing the employees
-        foreach (string json in File.ReadLines(filePath))
+        foreach (var log in logs.OrderBy(l => l))
         {
-            if (string.IsNullOrEmpty(json))
-            {
-                continue;
-            }
-            Employee deserialized = JsonConvert.DeserializeObject<Employee>(json) ?? throw new NullReferenceException();
-            if (deserialized.Salary >= highSalary)
-            {
-                count++;
-            }
+            Console.WriteLine(log);
         }
-
-        return count;
     }
+
+
+
 }
