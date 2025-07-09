@@ -2,6 +2,13 @@
 
 namespace Demo.DistributedProcessing.ConsoleDemo.Demos;
 
+/*
+ Using Dataflow create a process for manufacturing a car
+ you can use your own imagination for each transform block/pipeline
+ final output should say something like
+ 'a car with model 'tesla' 2025 with red color and steel body is created.' 
+ */
+
 // Source: https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/walkthrough-creating-a-dataflow-pipeline
 internal class DataflowDemo
 {
