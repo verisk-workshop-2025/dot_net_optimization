@@ -11,7 +11,7 @@ namespace FileIngestorApp.FileProcessor
 {
     public class ProcessBatch
     {
-        public void Execute(string branchCode, string inputDirectory, string outputDirectory)
+        public string Execute(string branchCode, string inputDirectory, string outputDirectory)
         {
             var productFile = Path.Combine(inputDirectory, $"{branchCode}_products.jl");
             var transactionFile = Path.Combine(inputDirectory, $"{branchCode}_transactions.jl");
@@ -87,26 +87,27 @@ namespace FileIngestorApp.FileProcessor
                 .SelectMany(t => t.Items)
                 .Count(i => productMap.TryGetValue(i.ProductID, out var prod) && prod.DiscountEligible);
 
-            using var writer = new StreamWriter(resultPath);
-            writer.WriteLine($"Branch: {branchCode}");
-            writer.WriteLine($"Total Sales: {totalSales:F2}");
-            writer.WriteLine($"Total Items Sold: {totalItemsSold}");
-            writer.WriteLine($"Most Sold Product: {mostSoldProduct}");
-            writer.WriteLine($"Most Sold Category: {mostSoldCategory}");
-            writer.WriteLine("Top 2 Cashiers:");
+            var writer = new System.Text.StringBuilder(); 
+            writer.AppendLine($"Branch: {branchCode}");
+            writer.AppendLine($"Total Sales: {totalSales:F2}");
+            writer.AppendLine($"Total Items Sold: {totalItemsSold}");
+            writer.AppendLine($"Most Sold Product: {mostSoldProduct}");
+            writer.AppendLine($"Most Sold Category: {mostSoldCategory}");
+            writer.AppendLine("Top 2 Cashiers:");
             foreach (var cashier in topCashiers)
             {
-                writer.WriteLine($" - {cashier.CashierID}: {cashier.Transactions} transactions");
+                writer.AppendLine($" - {cashier.CashierID}: {cashier.Transactions} transactions");
             }
-            writer.WriteLine($"Most Profitable Product: {mostProfitableProduct}");
-            writer.WriteLine($"Most Profitable Category: {mostProfitableCategory}");
-            //writer.WriteLine($"Peak Sales Hour: {peakSalesHour}:00");
-            writer.WriteLine($"Least Sold Product: {leastSoldProduct}");
-            writer.WriteLine($"Average Transaction Value: {averageTransactionValue:F2}");
-            writer.WriteLine($"Number of Transactions: {numberOfTransactions}");
-            writer.WriteLine($"Number of Unique Products Sold: {uniqueProductsSold}");
-            writer.WriteLine($"Perishable Products Sold Count: {perishableProductsSoldCount}");
-            writer.WriteLine($"Discount Eligible Sales Count: {discountEligibleSalesCount}");
+            writer.AppendLine($"Most Profitable Product: {mostProfitableProduct}");
+            writer.AppendLine($"Most Profitable Category: {mostProfitableCategory}");
+            //writer.AppendLine($"Peak Sales Hour: {peakSalesHour}:00");
+            writer.AppendLine($"Least Sold Product: {leastSoldProduct}");
+            writer.AppendLine($"Average Transaction Value: {averageTransactionValue:F2}");
+            writer.AppendLine($"Number of Transactions: {numberOfTransactions}");
+            writer.AppendLine($"Number of Unique Products Sold: {uniqueProductsSold}");
+            writer.AppendLine($"Perishable Products Sold Count: {perishableProductsSoldCount}");
+            writer.AppendLine($"Discount Eligible Sales Count: {discountEligibleSalesCount}");
+            return writer.ToString();
         }
     }
 }

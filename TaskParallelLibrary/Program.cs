@@ -28,6 +28,8 @@ namespace TaskParallelLibrary
 
             Console.WriteLine("Press 'Enter' to exit.");
             Console.ReadLine();
+
+            //GetPrimeListWithParallel_ExceptionHandled(numbers);
         }
 
         /// <summary>
@@ -115,5 +117,44 @@ namespace TaskParallelLibrary
             }
             return true;
         }
+
+        private static (List<int> Primes, List<Exception> Exceptions) GetPrimeListWithParallel_ExceptionHandled(IList<int> numbers)
+        {
+            var primeNumbers = new ConcurrentBag<int>();
+            var exceptions = new ConcurrentBag<Exception>();
+
+            Parallel.ForEach(numbers, number =>
+            {
+                try
+                {
+                    // Simulate error for demonstration
+                    if (number == 123_456)
+                    {
+                        throw new InvalidOperationException($"Deliberate error at number {number}");
+                    }
+
+                    if (IsPrime(number))
+                    {
+                        primeNumbers.Add(number);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //  Capture exceptions in a thread-safe collection
+                    exceptions.Add(ex);
+                }
+            });
+
+            // Return both results and caught exceptions for inspection
+            return (primeNumbers.ToList(), exceptions.ToList());
+
+            /*
+                Key Notes:
+             - Any exceptions thrown inside Parallel.ForEach are caught per iteration.
+             - We use ConcurrentBag<Exception> to safely collect them from all threads.
+             - This approach prevents the loop from crashing and allows you to handle/report errors later.
+             */
+        }
+
     }
 }

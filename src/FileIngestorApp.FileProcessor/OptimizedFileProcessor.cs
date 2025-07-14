@@ -19,16 +19,22 @@ public class OptimizedFileProcessor : IFileProcessor
 
     private async Task ProcessBranchesDataAsync(string inputDirectory, string outputDirectory)
     {
+        // Step 1: Input Collection
+        Console.WriteLine("[Step 1] Input Collection: Gathering branch product files...");
         var productFiles = Directory.GetFiles(inputDirectory, "*_products.jl");
+
+        // Step 2: Batch Formation (Each branch is considered a batch)
         var branchCodes = productFiles
             .Select(f => Path.GetFileName(f).Split('_')[0])
             .Distinct()
-            .ToList();
+            .ToList();      
+        Console.WriteLine("[Step 2] Batch Formation: Total Batches = " + branchCodes.Count);
 
+        // Step 3: Job Scheduling -- We are processing it immedately here, but in a real-world scenario, this would be different. 
+        Console.WriteLine("[Step 3] Job Scheduling: Scheduling tasks with max threads = " + Environment.ProcessorCount);
         int maxThreads = Environment.ProcessorCount; 
         var semaphore = new SemaphoreSlim(maxThreads);
-        var tasks = new List<Task>();
-        var logs = new ConcurrentBag<string>();
+        var tasks = new List<Task<BranchProcessingResult>>();
 
         foreach (var branchCode in branchCodes)
         {
@@ -36,32 +42,47 @@ public class OptimizedFileProcessor : IFileProcessor
 
             var task = Task.Run(() =>
             {
+                var sw = Stopwatch.StartNew();
+                var result = new BranchProcessingResult { BranchCode = branchCode };
                 try
                 {
-                    var sw = Stopwatch.StartNew();
-                    new ProcessBatch().Execute(branchCode, inputDirectory, outputDirectory);
-                    sw.Stop();
-                    logs.Add($"Processed branch {branchCode} in {sw.ElapsedMilliseconds} ms");
+                   
+                    // Step 4: Processing
+                    var output = new ProcessBatch().Execute(branchCode, inputDirectory, outputDirectory);
+                    result.SummaryText = output;                    
                 }
                 catch (Exception ex)
                 {
-                    logs.Add($"Error processing branch {branchCode}: {ex.Message}");
+                    // step 5: Error Handling
+                    result.ErrorMessage = ex.Message;
                 }
                 finally
                 {
+                    sw.Stop();
+                    result.ProcessingTime = sw.Elapsed;
                     semaphore.Release();
                 }
+                return result;
             });
 
             tasks.Add(task);
         }
 
-        await Task.WhenAll(tasks);
+        var results = await Task.WhenAll(tasks);
 
-        foreach (var log in logs.OrderBy(l => l))
+        // Step 6: Output Generation
+        Console.WriteLine("[Step 6] Output Generation: Writing summaries...");
+        Directory.CreateDirectory(outputDirectory);
+        foreach (var result in results)
         {
-            Console.WriteLine(log);
+            var path = Path.Combine(outputDirectory, $"{result.BranchCode}_summary.txt");
+            File.WriteAllText(path, result.Success ? result.SummaryText : $"ERROR: {result.ErrorMessage}");
+            Console.WriteLine($"[Step 4] Branch {result.BranchCode} processed in {result.ProcessingTime.TotalMilliseconds} ms");
         }
+
+        // Step 7: Post-Processing
+        Console.WriteLine("[Step 7] Post-Processing: All branches processed.");
+
     }
 
 

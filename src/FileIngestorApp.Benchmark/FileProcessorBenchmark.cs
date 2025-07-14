@@ -35,7 +35,7 @@ namespace FileIngestorApp.Benchmark
 
         [Benchmark(Baseline = true)]
         public void Legacy() => legacyProcessor.ProcessBranchesData(filePath, outputFilePathLeg);
-
+     
         [Benchmark]
         public void Optimized() => optimizedProcessor.ProcessBranchesData(filePath, outputFilePathOpt);
     }
