@@ -26,10 +26,14 @@ public class LegacyFileProcessor : IFileProcessor
 
         foreach (var branchCode in branchCodes)
         {
+            string result = String.Empty;
             try
             {
                 var sw = Stopwatch.StartNew();
-                new ProcessBatch().Execute(branchCode, inputDirectory, outputDirectory);
+                result = new ProcessBatch().Execute(branchCode, inputDirectory, outputDirectory);
+                Directory.CreateDirectory(outputDirectory);              
+                var path = Path.Combine(outputDirectory, $"{branchCode}_summary.txt");
+                File.WriteAllText(path, result);
                 sw.Stop();
                 Console.WriteLine($"Processed branch {branchCode} in {sw.ElapsedMilliseconds} ms");
             }
