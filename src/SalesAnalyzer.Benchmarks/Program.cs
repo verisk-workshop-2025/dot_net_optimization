@@ -6,4 +6,5 @@ using SalesAnalyzer.Benchmarks;
 BenchmarkRunner.Run<SalesProcessorBenchmarks>();
 //BenchmarkRunner.Run<SpanExampleBenchmarks>();
 //BenchmarkRunner.Run<StringBuilderExampleBenchmarks>();
+//BenchmarkRunner.Run<MemoryExampleBenchmarks>();
 

@@ -1,0 +1,24 @@
+﻿using BenchmarkDotNet.Attributes;
+using SalesAnalyzer.Lib.Services;
+
+namespace SalesAnalyzer.Benchmarks
+{
+    [MemoryDiagnoser]
+    public class MemoryExampleBenchmarks
+    {
+        private byte[] data;
+
+        [GlobalSetup]
+        public void Setup()
+        {
+            data = new byte[10_000];
+            new Random(42).NextBytes(data);
+        }
+
+        [Benchmark(Baseline = true)]
+        public long ArrayCopySum() => MemoryExample.SumWithArrayCopy(data);
+
+        [Benchmark]
+        public long MemorySliceSum() => MemoryExample.SumWithMemorySlice(data);
+    }
+}
