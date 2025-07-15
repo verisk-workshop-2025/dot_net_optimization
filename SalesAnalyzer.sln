@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesAnalyzer.Lib", "src\Sa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesAnalyzer.App", "src\SalesAnalyzer.App\SalesAnalyzer.App.csproj", "{C4372AB3-8035-4523-80D5-9754B1C7BCEE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesAnalyzer.Benchmarks", "src\SalesAnalyzer.Benchmarks\SalesAnalyzer.Benchmarks.csproj", "{22EA71D4-5D81-4DA5-8D5C-38A4D00125B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C4372AB3-8035-4523-80D5-9754B1C7BCEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4372AB3-8035-4523-80D5-9754B1C7BCEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4372AB3-8035-4523-80D5-9754B1C7BCEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22EA71D4-5D81-4DA5-8D5C-38A4D00125B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22EA71D4-5D81-4DA5-8D5C-38A4D00125B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22EA71D4-5D81-4DA5-8D5C-38A4D00125B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22EA71D4-5D81-4DA5-8D5C-38A4D00125B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
