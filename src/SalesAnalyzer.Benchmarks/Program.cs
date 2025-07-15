@@ -1,6 +1,9 @@
 ﻿using BenchmarkDotNet.Running;
 using SalesAnalyzer.Benchmarks;
 
-BenchmarkRunner.Run<SalesProcessorBenchmarks>();
-
 //BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run();
+
+BenchmarkRunner.Run<SalesProcessorBenchmarks>();
+//BenchmarkRunner.Run<SpanExampleBenchmarks>();
+//BenchmarkRunner.Run<StringBuilderExampleBenchmarks>();
+

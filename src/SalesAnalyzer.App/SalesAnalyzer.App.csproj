@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Snippets\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SalesAnalyzer.Lib\SalesAnalyzer.Lib.csproj" />
   </ItemGroup>
 
