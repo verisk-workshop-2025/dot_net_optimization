@@ -37,7 +37,22 @@ namespace TaskParallelLibrary
         /// </summary>
         /// <param name="inputs"></param>
         /// <returns></returns>
-        private static IList<int> GetPrimeList(IList<int> numbers) => numbers.Where(IsPrime).ToList();
+        private static List<int> GetPrimeList(List<int> numbers)
+        {
+            var primeList = new List<int>();
+
+            foreach (var number in numbers)
+            {
+                if (IsPrime(number))
+                {
+                    primeList.Add(number);
+                }
+            }
+
+            return primeList;
+        }
+
+
 
         /// <summary>
         /// GetPrimeListWithParallel returns Prime numbers by using Parallel.ForEach
@@ -123,7 +138,7 @@ namespace TaskParallelLibrary
             var primeNumbers = new ConcurrentBag<int>();
             var exceptions = new ConcurrentBag<Exception>();
 
-            Parallel.ForEach(numbers, number =>
+            Parallel.ForEach(numbers, (number, state) =>
             {
                 try
                 {
@@ -131,6 +146,11 @@ namespace TaskParallelLibrary
                     if (number == 123_456)
                     {
                         throw new InvalidOperationException($"Deliberate error at number {number}");
+
+                        /* Additional options for handling exceptions:
+                        //state.Break(); // Optionally stop further processing
+                        //state.Stop(); // Optionally stop all processing
+                        */
                     }
 
                     if (IsPrime(number))
@@ -154,7 +174,7 @@ namespace TaskParallelLibrary
              - We use ConcurrentBag<Exception> to safely collect them from all threads.
              - This approach prevents the loop from crashing and allows you to handle/report errors later.
              */
-        }
+                    }
 
-    }
+                }
 }

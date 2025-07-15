@@ -37,7 +37,7 @@ namespace ExampleThreading
             thread1.Start();
             thread2.Start();
 
-            thread1.Join();
+            thread1.Join(); // Join() is used to pause the current thread — in this case, the main thread — until the specified thread finishes execution.
             thread2.Join();
 
             stopwatch.Stop();
