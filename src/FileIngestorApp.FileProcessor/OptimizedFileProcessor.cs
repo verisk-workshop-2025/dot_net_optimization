@@ -1,6 +1,7 @@
 ﻿using FileIngestorApp.Core.Contracts;
 using FileIngestorApp.Core.Models;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
@@ -32,14 +33,17 @@ public class OptimizedFileProcessor : IFileProcessor
 
         // Step 3: Job Scheduling -- We are processing it immedately here, but in a real-world scenario, this would be different. 
         Console.WriteLine("[Step 3] Job Scheduling: Scheduling tasks with max threads = " + Environment.ProcessorCount);
+
+
         int maxThreads = Environment.ProcessorCount; //Environment.ProcessorCount: Returns number of logical CPU cores (e.g., 4, 8).
         var semaphore = new SemaphoreSlim(maxThreads); //SemaphoreSlim: Limits how many tasks can run at the same time. Think of it like giving only N keys to allow entry.
-        var tasks = new List<Task<BranchProcessingResult>>(); //tasks: to collect all the async tasks into this list to later wait for them all.
+        var tasks = new List<Task<BranchProcessingResult>>(); //tasks: to collect all the async tasks.
 
         foreach (var branchCode in branchCodes)
         {
-            //Before starting work for each branch, we WaitAsync() on the semaphore. If the semaphore is already at its max, the code waits until a slot is free.
-            await semaphore.WaitAsync();
+            //Before starting work for each branch, we WaitAsync() on the semaphore.
+            //If the semaphore is already at its max, the code waits until a slot is free.
+            await semaphore.WaitAsync(); //WaitAsync() ensures concurrency limit is respected.
 
             var task = Task.Run(() =>
             {
