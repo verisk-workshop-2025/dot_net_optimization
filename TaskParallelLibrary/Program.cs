@@ -13,7 +13,7 @@ namespace TaskParallelLibrary
         {
             // 2 million
             var limit = 2_000_000;
-            var numbers = Enumerable.Range(0, limit).ToList();
+            List<int> numbers = Enumerable.Range(0, limit).ToList();
 
             var watch = Stopwatch.StartNew();
             var primeNumbersFromForeach = GetPrimeList(numbers);
