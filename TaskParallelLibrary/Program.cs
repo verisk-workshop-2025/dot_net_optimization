@@ -29,7 +29,22 @@ namespace TaskParallelLibrary
             Console.WriteLine("Press 'Enter' to exit.");
             Console.ReadLine();
 
-            //GetPrimeListWithParallel_ExceptionHandled(numbers);
+            //var(primeNumbers, exceptions) = GetPrimeListWithParallel_ExceptionHandled(numbers);
+            //Console.WriteLine($"Total Prime Numbers: {primeNumbers.Count}");
+   
+            //if (exceptions.Any())
+            //{
+            //    Console.WriteLine("Exceptions encountered:");
+            //    foreach (var ex in exceptions)
+            //    {
+            //        Console.WriteLine($"- {ex.Message}");
+            //    }
+            //}
+            //else
+            //{
+            //    Console.WriteLine("No exceptions encountered.");
+            //}
+
         }
 
         /// <summary>
@@ -164,17 +179,14 @@ namespace TaskParallelLibrary
                     exceptions.Add(ex);
                 }
             });
-
-            // Return both results and caught exceptions for inspection
-            return (primeNumbers.ToList(), exceptions.ToList());
-
             /*
-                Key Notes:
-             - Any exceptions thrown inside Parallel.ForEach are caught per iteration.
-             - We use ConcurrentBag<Exception> to safely collect them from all threads.
-             - This approach prevents the loop from crashing and allows you to handle/report errors later.
-             */
-                    }
+               Key Notes:
+            - Any exceptions thrown inside Parallel.ForEach are caught per iteration.
+            - We use ConcurrentBag<Exception> to safely collect them from all threads.
+            - This approach prevents the loop from crashing and allows you to handle/report errors later.
+            */
+            return (primeNumbers.ToList(), exceptions.ToList());            
+        }
 
-                }
+    }
 }
