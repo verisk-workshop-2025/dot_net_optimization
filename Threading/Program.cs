@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ExampleThreading
 {
@@ -31,14 +32,21 @@ namespace ExampleThreading
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            Thread thread1 = new Thread(() => DoWork("Task 1 - Worker"));
-            Thread thread2 = new Thread(() => DoWork("Task 2 - Worker"));
 
-            thread1.Start();
-            thread2.Start();
+            //step:1
+            //Call below functions in multiple thread:
+            //DoWork("Task 1 - Worker");
+            //DoWork("Task 2 - Worker");
 
-            thread1.Join(); // Join() is used to pause the current thread — in this case, the main thread — until the specified thread finishes execution.
-            thread2.Join();
+
+            //step:2
+            //Start the threads:
+
+
+
+            //step:3
+            //Join the main thread to wait for completion:
+
 
             stopwatch.Stop();
             Console.WriteLine($"\nTime taken (Multi Thread): {stopwatch.ElapsedMilliseconds} ms");

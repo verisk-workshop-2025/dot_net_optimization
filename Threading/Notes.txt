@@ -1,0 +1,10 @@
+
+Call a function in a thread:
+--> Thread thread1 = new Thread(() => DoWork("Task 1 - Worker"));
+
+Start the thread:        
+--> thread1.Start();
+            
+Join() is used to pause the current thread — in this case, the main thread — until the specified thread finishes execution.
+--> thread1.Join(); 
+    
