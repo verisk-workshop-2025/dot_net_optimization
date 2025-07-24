@@ -1,0 +1,54 @@
+﻿using BenchmarkDotNet.Attributes;
+
+namespace SalesAnalyzer.Benchmarks
+{
+    [MemoryDiagnoser]
+    public class ExceptionFlowControlExampleBenchmarks
+    {
+        private string?[] testData;
+
+        [GlobalSetup]
+        public void Setup()
+        {
+            var rand = new Random(42);
+            testData = new string?[10_000];
+            for (int i = 0; i < testData.Length; i++)
+            {
+                // 50% nulls, 50% valid strings
+                testData[i] = rand.Next(2) == 0 ? null : "hello";
+            }
+        }
+
+        // Normal null-check based flow control
+        [Benchmark(Baseline = true)]
+        public int NullCheckFlowControl()
+        {
+            int total = 0;
+            foreach (var item in testData)
+            {
+                if (item != null)
+                    total += item.Length;
+            }
+            return total;
+        }
+
+        // Exception-based flow control
+        [Benchmark]
+        public int ExceptionFlowControl()
+        {
+            int total = 0;
+            foreach (var item in testData)
+            {
+                try
+                {
+                    total += item!.Length;
+                }
+                catch (NullReferenceException)
+                {
+                    // Expected for nulls
+                }
+            }
+            return total;
+        }
+    }
+}

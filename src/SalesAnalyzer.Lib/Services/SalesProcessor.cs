@@ -7,7 +7,7 @@ namespace SalesAnalyzer.Lib.Services
     {
         public Dictionary<string, Branch> Branches { get; } = new Dictionary<string, Branch>(StringComparer.Ordinal);
 
-        public void Initialize()
+        public void InitializeUnoptimized()
         {
             foreach (var file in Directory.GetFiles(dataPath))
             {
@@ -60,7 +60,6 @@ namespace SalesAnalyzer.Lib.Services
 
             return lowestSellingItem?.ItemName ?? "No sales data";
         }
-
 
         public string FindHighestSellingCountItem(string branch)
         {

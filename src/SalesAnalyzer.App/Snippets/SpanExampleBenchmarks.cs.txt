@@ -1,0 +1,23 @@
+﻿using BenchmarkDotNet.Attributes;
+using SalesAnalyzer.Lib.Services;
+
+namespace SalesAnalyzer.Benchmarks
+{
+    [MemoryDiagnoser]
+    public class SpanExampleBenchmarks
+    {
+        private string input;
+
+        [GlobalSetup]
+        public void Setup()
+        {
+            input = string.Join(',', Enumerable.Range(1, 10_000));
+        }
+
+        [Benchmark]
+        public int[] SplitMethod() => SpanExample.ParseWithSplit(input);
+
+        [Benchmark]
+        public int[] SpanMethod() => SpanExample.ParseWithSpan(input);
+    }
+}
