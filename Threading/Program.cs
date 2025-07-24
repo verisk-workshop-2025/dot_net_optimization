@@ -35,8 +35,8 @@ namespace ExampleThreading
 
             //step:1
             //Call below functions in multiple thread:
-            //DoWork("Task 1 - Worker");
-            //DoWork("Task 2 - Worker");
+            DoWork("Task 1 - Worker");
+            DoWork("Task 2 - Worker");
 
 
             //step:2
