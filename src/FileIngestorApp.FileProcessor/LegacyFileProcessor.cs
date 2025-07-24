@@ -1,38 +1,50 @@
 ﻿using FileIngestorApp.Core.Contracts;
 using FileIngestorApp.Core.Models;
-using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Text;
+using System.Text.Json;
 
 namespace FileIngestorApp.FileProcessor;
 
 public class LegacyFileProcessor : IFileProcessor
-{
-    public int GetHighEarnersCount(string filePath, int highSalary)
+{  
+    public void ProcessBranchesData(string inputDirectory, string outputDirectory)
     {
-        string text = File.ReadAllText(filePath);
-        string[] lines = text.Split(Environment.NewLine);
+        //var sw = Stopwatch.StartNew();
+        ProcessBranchesDataWithSingleThread(inputDirectory, outputDirectory);
+        //sw.Stop();
+        //Console.WriteLine($"Total time With Single Thread: {sw.ElapsedMilliseconds} ms");
+    }
 
-        // parsing the employees
-        List<Employee> employees = [];
-        foreach (string json in lines)
+    private void ProcessBranchesDataWithSingleThread(string inputDirectory, string outputDirectory)
+    {
+        var productFiles = Directory.GetFiles(inputDirectory, "*_products.jl");
+        var branchCodes = productFiles
+            .Select(f => Path.GetFileName(f).Split('_')[0])
+            .Distinct()
+            .ToList();
+
+        foreach (var branchCode in branchCodes)
         {
-            if (string.IsNullOrEmpty(json))
+            string result = String.Empty;
+            try
             {
-                continue;
+                var sw = Stopwatch.StartNew();
+                result = new ProcessBatch().Execute(branchCode, inputDirectory, outputDirectory);
+                Directory.CreateDirectory(outputDirectory);              
+                var path = Path.Combine(outputDirectory, $"{branchCode}_summary.txt");
+                File.WriteAllText(path, result);
+                sw.Stop();
+                Console.WriteLine($"Processed branch {branchCode} in {sw.ElapsedMilliseconds} ms");
             }
-
-            Employee deserialized = JsonConvert.DeserializeObject<Employee>(json) ?? throw new NullReferenceException();
-            employees.Add(deserialized);
-        }
-
-        List<Employee> highEarners = [];
-        foreach (Employee employee in employees)
-        {
-            if (employee.Salary >= highSalary)
+            catch (Exception ex)
             {
-                highEarners.Add(employee);
+                Console.Error.WriteLine($"Error processing branch {branchCode}: {ex.Message}");
             }
         }
-
-        return highEarners.Count;
     }
 }
+
+
+
+

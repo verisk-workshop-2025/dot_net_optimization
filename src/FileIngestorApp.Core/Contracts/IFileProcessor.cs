@@ -2,5 +2,5 @@
 
 public interface IFileProcessor
 {
-    int GetHighEarnersCount(string filePath, int highSalary);
+    void ProcessBranchesData(string inputDirectory, string outputDirectory);
 }

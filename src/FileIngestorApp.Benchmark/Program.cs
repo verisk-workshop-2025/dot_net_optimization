@@ -3,11 +3,17 @@
 #if DEBUG
 
 var summary1 = new FileProcessorBenchmark();
-var x = summary1.Legacy();
-Console.WriteLine("Legacy: " + x);
 
-var y = summary1.Optimized();
-Console.WriteLine("Optimized: " + y);
+
+Console.WriteLine("Generating Files..");
+summary1.Setup();
+
+
+//Console.WriteLine("Calling.. Legacy");
+//summary1.Legacy();
+
+//Console.WriteLine("Calling..  Optimized");
+//summary1.Optimized();
 
 #else
 

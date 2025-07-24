@@ -1,32 +1,37 @@
 ﻿using BenchmarkDotNet.Attributes;
 using FileIngestorApp.FileProcessor;
+using System.IO;
 
 namespace FileIngestorApp.Benchmark
 {
-    [MemoryDiagnoser]
     [SimpleJob]
     public class FileProcessorBenchmark
     {
-        [Params(100, 10000)]
-        public int N;
 
-        private readonly int highSalary = 3000;// including this one
-        private readonly string filePath = @"C:\TestFiles\test.jl";
+        private readonly string filePath = @"C:\SuperMarketFilesWorkShop";
+        private readonly string outputFilePathLeg = @"C:\SuperMarketFilesWorkShop\ResultLegacy";
+        private readonly string outputFilePathOpt = @"C:\SuperMarketFilesWorkShop\ResultOptimized";
 
         private readonly LegacyFileProcessor legacyProcessor = new();
-        private readonly OptimizedFileProcessor optimizedProcessor = new();
+        private readonly BatchFileProcessing optimizedProcessor = new();
         private readonly FileGenerator fileGenerator = new();
 
         [GlobalSetup]
         public void Setup()
         {
-            fileGenerator.GenerateFile(N, filePath);
+            for (int i = 0; i < 10; i++)
+            {
+                fileGenerator.GenerateFile(1000, $"SM0{i}", filePath);
+            }
+            // Possible place to optimize the file generation using parallel processing:
         }
 
+        
         [Benchmark(Baseline = true)]
-        public int Legacy() => legacyProcessor.GetHighEarnersCount(filePath, highSalary);
-
+        public void Legacy() => legacyProcessor.ProcessBranchesData(filePath, outputFilePathLeg);
+     
         [Benchmark]
-        public int Optimized() => optimizedProcessor.GetHighEarnersCount(filePath, highSalary);
+        public void Optimized() => optimizedProcessor.ProcessBranchesData(filePath, outputFilePathOpt);
+        
     }
 }
