@@ -16,45 +16,45 @@ namespace SalesAnalyzer.Benchmarks
         {
             processor = new SalesProcessor();
 
-            //processor.Initialize();
-            //processor.InitializeV2();
+            //processor.InitializeUnoptimized();
+            //processor.InitializeOptimized();
             processor.InitializeHighlyOptimized();
         }
 
         //[Benchmark(Baseline = true)]
-        //public string Initialize()
+        //public string InitializeUnoptimized()
         //{
         //    var processor = new SalesProcessor();
 
-        //    processor.Initialize();
+        //    processor.InitializeUnoptimized();
 
-        //    return "Initialize";
+        //    return "InitializeUnoptimized";
         //}
 
 
         //[Benchmark()]
-        //public string InitializeV2()
+        //public string InitializeOptimized()
         //{
         //    var processor = new SalesProcessor();
 
-        //    processor.InitializeV2();
+        //    processor.InitializeOptimized();
 
-        //    return "InitializeV2";
+        //    return "InitializeOptimized";
         //}
 
         //[Benchmark]
-        //public string InitializeV3()
+        //public string InitializeHighlyOptimized()
         //{
         //    var processor = new SalesProcessor();
 
-        //    processor.InitializeV3();
+        //    processor.InitializeHighlyOptimized();
 
-        //    return "InitializeV3";
+        //    return "InitializeHighlyOptimized";
         //}
 
 
         [Benchmark]
-        public string Process()
+        public string Process(Baseline = true)
         {
             var sb = new StringBuilder();
             sb.AppendLine("Process: -------------------");
