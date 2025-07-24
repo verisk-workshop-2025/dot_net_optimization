@@ -76,54 +76,18 @@ namespace TaskParallelLibrary
         /// <returns></returns>
         private static IList<int> GetPrimeListWithParallel(IList<int> numbers)
         {
+            var primeList = new List<int>();
 
-            // Sequential version
-            //var primeNumbers = new List<int>();
-
-            /* NOTE:::::
-             Multiple threads may try to add to the collection at the same time. 
-             A standard List<T> is not thread-safe, and using it in this way could cause:
-                * Race conditions
-                * Data corruption
-                * Exceptions (e.g., InvalidOperationException)
-             */
-
-            //foreach (var number in numbers)
-            //{
-            //    if (IsPrime(number))
-            //    {
-            //        primeNumbers.Add(number);
-            //    }
-            //}
-
-
-            // Parallel equivalent
-
-            /* NOTE:: Using ConcurrentBag<T> to safely add items from multiple threads.
-            ConcurrentBag<T> is specifically designed for safe, lock-free access by multiple threads. 
-            Internally, it uses thread-local storage and fine-grained locking to maximize performance and correctness in concurrent scenarios.
-            */
-
-            var primeNumbers = new ConcurrentBag<int>();
-
-
-            Parallel.ForEach(numbers, number =>
+            foreach (var number in numbers)
             {
                 if (IsPrime(number))
                 {
-                    primeNumbers.Add(number);
+                    primeList.Add(number);
                 }
-            });
+            }
 
-            return primeNumbers.ToList();
+            return primeList;
 
-            /* Final Note:::::
-             Parallel.ForEach partitions the input IEnumerable<T> (numbers) into chunks.
-             It creates tasks for each chunk.
-             These tasks run in parallel on multiple threads (using the ThreadPool).
-             The delegate (number => { ... }) is executed concurrently across threads.
-             Results are written into a thread-safe ConcurrentBag<int>.
-             */
         }
 
         /// <summary>

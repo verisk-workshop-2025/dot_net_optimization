@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 
 namespace FileIngestorApp.FileProcessor;
-public class OptimizedFileProcessor : IFileProcessor
+public class BatchFileProcessing : IFileProcessor
 {
     public void ProcessBranchesData(string inputDirectory, string outputDirectory)
     {
