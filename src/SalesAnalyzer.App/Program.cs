@@ -8,7 +8,7 @@ var processor = new SalesProcessor();
 
 Console.WriteLine("Starting..");
 
-processor.InitializeUnoptimized();
+processor.InitializeHighlyOptimized();
 
 var result = string.Empty;
 foreach (var branch in processor.Branches)

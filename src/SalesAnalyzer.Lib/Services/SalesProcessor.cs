@@ -45,6 +45,97 @@ namespace SalesAnalyzer.Lib.Services
             }
         }
 
+        public void InitializeOptimized()
+        {
+            foreach (var file in Directory.GetFiles(dataPath))
+            {
+                using var reader = new StreamReader(File.Open(file, FileMode.Open, FileAccess.Read));
+                string? line = reader.ReadLine();
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    var lineCols = line.Split(',');
+                    var sale = new Sale
+                    {
+                        //Branch = lineCols[0],
+                        //CustomerId = string.Equals(lineCols[1], "NULL", StringComparison.OrdinalIgnoreCase) ? null : lineCols[1],
+                        //BillTo = lineCols[2],
+                        ItemName = lineCols[3],
+                        //Category = lineCols[4],
+                        //Price = decimal.Parse(lineCols[5], CultureInfo.InvariantCulture),
+                        Quantity = int.Parse(lineCols[6]),
+                        //Total = decimal.Parse(lineCols[7], CultureInfo.InvariantCulture),
+                        Status = lineCols[8],
+                        //BillDate = DateTime.ParseExact(lineCols[9].Trim(), "yyyyMMdd", CultureInfo.InvariantCulture)
+                    };
+
+                    if (!Branches.ContainsKey(lineCols[0]))
+                        Branches.Add(lineCols[0], new Branch(lineCols[0]));
+
+                    Branches[lineCols[0]].Sales.Add(sale);
+                }
+            }
+        }
+
+        public void InitializeHighlyOptimized()
+        {
+            foreach (var file in Directory.GetFiles(dataPath))
+            {
+                using var reader = new StreamReader(file);
+                reader.ReadLine();
+
+                while (reader.ReadLine() is string line)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+
+                    int startIndex = 0;
+                    int endIndex = 0;
+                    string branchName = string.Empty;
+                    string itemName = string.Empty;
+                    string quantitiy = string.Empty;
+                    string status = string.Empty;
+
+                    for (int column = 0; column < 10; column++)
+                    {
+                        endIndex = line.IndexOf(',', startIndex);
+
+                        if (column == 0)
+                            branchName = line[startIndex..endIndex];
+
+                        if (column == 3)
+                            itemName = line[startIndex..endIndex];
+
+                        if (column == 6)
+                            quantitiy = line[startIndex..endIndex];
+
+                        if (column == 8)
+                            status = line[startIndex..endIndex];
+
+                        startIndex = endIndex + 1;
+                    }
+
+                    var sale = new Sale
+                    {
+                        //Branch = lineCols[0],
+                        //CustomerId = string.Equals(lineCols[1], "NULL", StringComparison.OrdinalIgnoreCase) ? null : lineCols[1],
+                        //BillTo = lineCols[2],
+                        ItemName = itemName,
+                        //Category = lineCols[4],
+                        //Price = decimal.Parse(lineCols[5], CultureInfo.InvariantCulture),
+                        Quantity = int.Parse(quantitiy),
+                        //Total = decimal.Parse(lineCols[7], CultureInfo.InvariantCulture),
+                        Status = status,
+                        //BillDate = DateTime.ParseExact(lineCols[9].Trim(), "yyyyMMdd", CultureInfo.InvariantCulture)
+                    };
+
+                    if (!Branches.ContainsKey(branchName))
+                        Branches.Add(branchName, new Branch(branchName));
+
+                    Branches[branchName].Sales.Add(sale);
+                }
+            }
+        }
+
         public string FindLowestSellingCountItem(string branch)
         {
             var itemsWithTotalSoldCount = Branches[branch].Sales
