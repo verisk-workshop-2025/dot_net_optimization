@@ -1,0 +1,17 @@
+﻿using BenchmarkDotNet.Attributes;
+using SalesAnalyzer.Lib.Services;
+
+namespace SalesAnalyzer.Benchmarks
+{
+    [MemoryDiagnoser]
+    public class StringBuilderExampleBenchmarks
+    {
+        private const int count = 10_000;
+
+        [Benchmark]
+        public string UsingStringConcatenation() => StringBuilderExample.BuildUsingConcatenation(count);
+
+        [Benchmark]
+        public string UsingStringBuilder() => StringBuilderExample.BuildUsingStringBuilder(count);
+    }
+}

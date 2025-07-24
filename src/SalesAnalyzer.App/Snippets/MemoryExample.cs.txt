@@ -1,0 +1,34 @@
+﻿namespace SalesAnalyzer.Lib.Services
+{
+    public class MemoryExample
+    {
+        public static long SumWithArrayCopy(byte[] data)
+        {
+            long total = 0;
+
+            for (int i = 0; i < data.Length; i += 1000)
+            {
+                byte[] chunk = new byte[1000];
+                Array.Copy(data, i, chunk, 0, 1000);
+                total += chunk.Sum(x => (long)x);
+            }
+
+            return total;
+        }
+
+        public static long SumWithMemorySlice(byte[] data)
+        {
+            long total = 0;
+            Memory<byte> mem = data;
+
+            for (int i = 0; i < data.Length; i += 1000)
+            {
+                Span<byte> span = mem.Slice(i, 1000).Span;
+                for (int j = 0; j < span.Length; j++)
+                    total += span[j];
+            }
+
+            return total;
+        }
+    }
+}

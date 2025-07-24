@@ -1,0 +1,33 @@
+﻿using System.Text;
+
+namespace SalesAnalyzer.Lib.Services
+{
+    public class StringBuilderExample
+    {
+        public static string BuildUsingConcatenation(int count)
+        {
+            string result = "";
+
+            for (int i = 1; i <= count; i++)
+            {
+                result += i.ToString();
+                if (i != count) result += ",";
+            }
+
+            return result;
+        }
+
+        public static string BuildUsingStringBuilder(int count)
+        {
+            var sb = new StringBuilder();
+
+            for (int i = 1; i <= count; i++)
+            {
+                sb.Append(i);
+                if (i != count) sb.Append(",");
+            }
+
+            return sb.ToString();
+        }
+    }
+}
