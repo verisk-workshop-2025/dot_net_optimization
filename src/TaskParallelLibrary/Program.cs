@@ -76,17 +76,19 @@ namespace TaskParallelLibrary
         /// <returns></returns>
         private static IList<int> GetPrimeListWithParallel(IList<int> numbers)
         {
-            var primeList = new ConcurrentBag<int>();
 
-            Parallel.ForEach(numbers, number =>
+            // Update below code to use Parallel.ForEach
+            var primeList = new List<int>();
+
+            foreach (var number in numbers)
             {
                 if (IsPrime(number))
                 {
                     primeList.Add(number);
                 }
+            }
 
-            });
-            return primeList.ToList();
+            return primeList;
         }
 
         /// <summary>

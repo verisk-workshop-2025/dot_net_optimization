@@ -35,20 +35,17 @@ namespace ExampleThreading
 
             //step:1
             //Call below functions in multiple thread:
-            Thread t1 = new Thread(() => DoWork("Task 1 - Worker"));
-            Thread t2 = new Thread(() => DoWork("Task 2 - Worker"));
+            DoWork("Task 1 - Worker");
+            DoWork("Task 2 - Worker");
 
-            t1.Start();
-            t2.Start();
+
             //step:2
             //Start the threads:
 
 
-
             //step:3
             //Join the main thread to wait for completion:
-            t1.Join();
-            t2.Join();  
+         
 
             stopwatch.Stop();
             Console.WriteLine($"\nTime taken (Multi Thread): {stopwatch.ElapsedMilliseconds} ms");
