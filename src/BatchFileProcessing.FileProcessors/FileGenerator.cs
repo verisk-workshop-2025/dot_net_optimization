@@ -1,14 +1,13 @@
-﻿using Bogus;
-using FileIngestorApp.Core.Models;
+﻿using BatchFileProcessing.Core.Models;
+using Bogus;
 using Newtonsoft.Json;
-using System;
-using System.Reflection.Emit;
 
-namespace FileIngestorApp.FileProcessor;
+namespace BatchFileProcessing.FileProcessors;
 
 public class FileGenerator
 {
-     private readonly Random _random = new();
+    private readonly Random _random = new();
+
     public void GenerateFile(int transactionPerBranch, string branchCode, string path)
     {
         FileInfo file = new(path);
@@ -20,38 +19,37 @@ public class FileGenerator
         GenerateData(branchCode, transactionPerBranch, path);
     }
 
-
     public void GenerateData(string branchCode, int transactionsCount, string outputDirectory)
     {
-        var categoryProductMap = new Dictionary<string, List<string>>
+        Dictionary<string, List<string>> categoryProductMap = new()
         {
-            ["Grocery"] = new() { "Rice Bag", "Atta", "Lentils", "Sugar", "Mustard Oil", "Ghee" },
-            ["Snacks"] = new() { "Snickers", "Lays Chips", "Oreo", "Maggi Noodles", "Momo Noodles" },
-            ["Personal Care"] = new() { "Dove Soap", "Closeup Toothpaste", "Lifebuoy Soap", "Clinic Plus Shampoo", "Fair & Lovely" },
-            ["Cleaning"] = new() { "Vim Bar", "Surf Excel", "Harpic", "Colin Spray", "Phenyl" },
-            ["Beverages"] = new() { "Pepsi", "Coke", "Real Juice", "Fanta", "Red Bull" }
+            ["Grocery"] = ["Rice Bag", "Atta", "Lentils", "Sugar", "Mustard Oil", "Ghee"],
+            ["Snacks"] = ["Snickers", "Lays Chips", "Oreo", "Maggi Noodles", "Momo Noodles"],
+            ["Personal Care"] = ["Dove Soap", "Closeup Toothpaste", "Lifebuoy Soap", "Clinic Plus Shampoo", "Fair & Lovely"],
+            ["Cleaning"] = ["Vim Bar", "Surf Excel", "Harpic", "Colin Spray", "Phenyl"],
+            ["Beverages"] = ["Pepsi", "Coke", "Real Juice", "Fanta", "Red Bull"]
         };
 
-        var brands = new[] { "Dove", "PepsiCo", "HUL", "Colgate", "Unilever", "Nestle", "Patanjali" };
-        var units = new[] { "pcs", "kg", "ltr", "pack" };
-        var suppliers = new[] { "Central Warehouse", "Local Distributor", "Importer Pvt Ltd" };
+        string[] brands = ["Dove", "PepsiCo", "HUL", "Colgate", "Unilever", "Nestle", "Patanjali"];
+        string[] units = ["pcs", "kg", "ltr", "pack"];
+        string[] suppliers = ["Central Warehouse", "Local Distributor", "Importer Pvt Ltd"];
         var flatList = categoryProductMap.SelectMany(kv => kv.Value.Select(p => new { ProductName = p, Category = kv.Key })).ToList();
 
-        var faker = new Bogus.Faker();
+        Faker faker = new();
         Directory.CreateDirectory(outputDirectory);
 
-        var productFile = Path.Combine(outputDirectory, $"{branchCode}_products.jl");
-        var transactionFile = Path.Combine(outputDirectory, $"{branchCode}_transactions.jl");
-        var productList = new List<Product>();
+        string productFile = Path.Combine(outputDirectory, $"{branchCode}_products.jl");
+        string transactionFile = Path.Combine(outputDirectory, $"{branchCode}_transactions.jl");
+        List<Product> productList = [];
 
-        using var productWriter = new StreamWriter(productFile);
+        using StreamWriter productWriter = new(productFile);
         for (int i = 0; i < 500; i++)
         {
             var entry = faker.PickRandom(flatList);
-            var minPrice = faker.Random.Double(20, 200);
-            var maxPrice = minPrice + faker.Random.Double(10, 100);
+            double minPrice = faker.Random.Double(20, 200);
+            double maxPrice = minPrice + faker.Random.Double(10, 100);
 
-            var product = new Product
+            Product product = new()
             {
                 ProductID = Guid.NewGuid().ToString(),
                 SKU = faker.Commerce.Ean13(),
@@ -75,16 +73,16 @@ public class FileGenerator
             productWriter.WriteLine(JsonConvert.SerializeObject(product));
         }
 
-        using var txnWriter = new StreamWriter(transactionFile);
+        using StreamWriter txnWriter = new(transactionFile);
         for (int i = 0; i < transactionsCount; i++)
         {
             int itemCount = _random.Next(1, 6);
-            var selectedProducts = productList.OrderBy(_ => _random.Next()).Take(itemCount).ToList();
+            List<Product> selectedProducts = productList.OrderBy(_ => _random.Next()).Take(itemCount).ToList();
 
-            var items = new List<Item>();
+            List<Item> items = [];
             double transactionTotal = 0;
 
-            foreach (var product in selectedProducts)
+            foreach (Product? product in selectedProducts)
             {
                 int quantity = _random.Next(1, 6);
                 double price = Math.Round(_random.NextDouble() * (product.MaxPrice - product.MinPrice) + product.MinPrice, 2);
@@ -103,7 +101,7 @@ public class FileGenerator
                 transactionTotal += totalPrice;
             }
 
-            var transaction = new Transaction
+            Transaction transaction = new()
             {
                 TransactionID = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.Now.AddMinutes(-_random.Next(0, 1440)).ToString("o"),
@@ -118,7 +116,5 @@ public class FileGenerator
 
             txnWriter.WriteLine(JsonConvert.SerializeObject(transaction));
         }
-
     }
-
 }

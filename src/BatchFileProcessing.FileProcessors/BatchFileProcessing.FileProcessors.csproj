@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FileIngestorApp.Core\FileIngestorApp.Core.csproj" />
+    <ProjectReference Include="..\BatchFileProcessing.Core\BatchFileProcessing.Core.csproj" />
   </ItemGroup>
 
 </Project>

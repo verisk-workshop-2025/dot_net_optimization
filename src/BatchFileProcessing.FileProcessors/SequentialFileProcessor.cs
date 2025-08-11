@@ -1,13 +1,9 @@
-﻿using FileIngestorApp.Core.Contracts;
-using FileIngestorApp.Core.Models;
-using System.Diagnostics;
-using System.Text;
-using System.Text.Json;
+﻿using BatchFileProcessing.Core.Contracts;
 
-namespace FileIngestorApp.FileProcessor;
+namespace BatchFileProcessing.FileProcessors;
 
-public class LegacyFileProcessor : IFileProcessor
-{  
+public class SequentialFileProcessor : IFileProcessor
+{
     public void ProcessBranchesData(string inputDirectory, string outputDirectory)
     {
         //var sw = Stopwatch.StartNew();
@@ -18,24 +14,24 @@ public class LegacyFileProcessor : IFileProcessor
 
     private void ProcessBranchesDataWithSingleThread(string inputDirectory, string outputDirectory)
     {
-        var productFiles = Directory.GetFiles(inputDirectory, "*_products.jl");
-        var branchCodes = productFiles
+        string[] productFiles = Directory.GetFiles(inputDirectory, "*_products.jl");
+        List<string> branchCodes = productFiles
             .Select(f => Path.GetFileName(f).Split('_')[0])
             .Distinct()
             .ToList();
 
-        foreach (var branchCode in branchCodes)
+        foreach (string? branchCode in branchCodes)
         {
-            string result = String.Empty;
+            string result = string.Empty;
             try
             {
-                var sw = Stopwatch.StartNew();
+                DateTime start = DateTime.Now;
                 result = new ProcessBatch().Execute(branchCode, inputDirectory, outputDirectory);
-                Directory.CreateDirectory(outputDirectory);              
-                var path = Path.Combine(outputDirectory, $"{branchCode}_summary.txt");
+                Directory.CreateDirectory(outputDirectory);
+                string path = Path.Combine(outputDirectory, $"{branchCode}_summary.txt");
                 File.WriteAllText(path, result);
-                sw.Stop();
-                Console.WriteLine($"Processed branch {branchCode} in {sw.ElapsedMilliseconds} ms");
+                TimeSpan timeTaken = DateTime.Now - start;
+                Console.WriteLine($"Processed branch {branchCode} in {timeTaken.TotalMilliseconds} ms");
             }
             catch (Exception ex)
             {

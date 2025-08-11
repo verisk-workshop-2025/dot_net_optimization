@@ -1,4 +1,4 @@
-﻿namespace FileIngestorApp.Core.Contracts;
+﻿namespace BatchFileProcessing.Core.Contracts;
 
 public interface IFileProcessor
 {

@@ -29,11 +29,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskParallelLibrary", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Threading", "src\Threading\Threading.csproj", "{AEB3D51B-EF97-0332-2DDF-9B3E3D8348D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIngestorApp.Core", "src\FileIngestorApp.Core\FileIngestorApp.Core.csproj", "{8BF2C4CA-1175-B96A-92C2-93658087F6FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatchFileProcessing.Core", "src\BatchFileProcessing.Core\BatchFileProcessing.Core.csproj", "{8BF2C4CA-1175-B96A-92C2-93658087F6FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIngestorApp.FileProcessor", "src\FileIngestorApp.FileProcessor\FileIngestorApp.FileProcessor.csproj", "{E745154D-FDF0-0C73-7907-D5C02A9448F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatchFileProcessing.FileProcessors", "src\BatchFileProcessing.FileProcessors\BatchFileProcessing.FileProcessors.csproj", "{E745154D-FDF0-0C73-7907-D5C02A9448F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIngestorApp.Benchmark", "src\FileIngestorApp.Benchmark\FileIngestorApp.Benchmark.csproj", "{BA20A98B-46E8-CBAB-6650-752717AB6167}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatchFileProcessing.Demo", "src\BatchFileProcessing.Demo\BatchFileProcessing.Demo.csproj", "{BA20A98B-46E8-CBAB-6650-752717AB6167}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesAnalyzer.Lib", "src\SalesAnalyzer.Lib\SalesAnalyzer.Lib.csproj", "{AE67CDBC-B796-4E13-6969-6EAF14934BA3}"
 EndProject

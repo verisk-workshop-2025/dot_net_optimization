@@ -1,0 +1,73 @@
+// Sequential file generation
+for (int i = 0; i < 10; i++)
+{
+    fileGenerator.GenerateFile(N, $"SM0{i}", filePath);
+}
+
+
+// Parallel Equavalent Code:
+Parallel.For(0, 10, i =>
+{
+    fileGenerator.GenerateFile(N, $"SM0{i}", filePath);
+});
+
+
+
+##############################################################################
+// ParallelFileProcessor.cs
+
+// Step 1: Input Collection
+Console.WriteLine("[Step 1] Input Collection: Gathering branch product files...");
+string[] productFiles = Directory.GetFiles(inputDirectory, "*_products.jl");
+
+// Step 2: Batch Formation(Each branch is considered a batch)
+List<string> branchCodes = productFiles
+            .Select(f => Path.GetFileName(f).Split('_')[0])
+            .Distinct()
+            .ToList();
+Console.WriteLine("[Step 2] Batch Formation: Total Batches = " + branchCodes.Count);
+
+// Step 3: Job Scheduling
+// We are processing it immedately here, but in a real-world scenario, this would be different. 
+Console.WriteLine("[Step 3] Job Scheduling: Scheduling tasks with max threads = " + Environment.ProcessorCount);
+
+
+// Step 4 & 5 : Processing and Error Handling
+ConcurrentBag<BranchProcessingResult> results = [];
+
+Parallel.ForEach(branchCodes, branchCode =>
+{
+    BranchProcessingResult result = new() { BranchCode = branchCode };
+    DateTime start = DateTime.Now;
+    try
+    {
+        // Step 4: Processing
+        string output = new ProcessBatch().Execute(branchCode, inputDirectory, outputDirectory);
+        result.SummaryText = output;
+    }
+    catch (Exception ex)
+    {
+        // step 5: Error Handling
+        result.ErrorMessage = ex.Message;
+    }
+    result.ProcessingTime = DateTime.Now - start;
+    results.Add(result);
+});
+
+// Step 6: Output Generation
+Console.WriteLine("[Step 6] Output Generation: Writing summaries...");
+Directory.CreateDirectory(outputDirectory);
+foreach (BranchProcessingResult? result in results)
+{
+    string path = Path.Combine(outputDirectory, $"{result.BranchCode}_summary.txt");
+    File.WriteAllText(path, result.Success ? result.SummaryText : $"ERROR: {result.ErrorMessage}");
+    Console.WriteLine($"[Step 4] Branch {result.BranchCode} processed in {result.ProcessingTime.TotalMilliseconds} ms");
+}
+
+// Step 7: Post - Processing
+Console.WriteLine("[Step 7] Post-Processing: All branches processed.");
+foreach (string file in Directory.GetFiles(inputDirectory, "*.jl"))
+{
+    try { File.Delete(file); Console.WriteLine($"Deleted: {file}"); }
+    catch (Exception ex) { Console.WriteLine($"Error: {file} - {ex.Message}"); }
+}
