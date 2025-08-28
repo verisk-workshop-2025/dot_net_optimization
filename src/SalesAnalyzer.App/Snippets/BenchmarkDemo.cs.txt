@@ -54,7 +54,7 @@ namespace SalesAnalyzer.Benchmarks
         public async Task<string> MethodAVersion2()
         {
             await Task.Delay(100); // after optimization (let's assume)
-            return "MethodAVersion1";
+            return "MethodAVersion2";
         }
     }
 }

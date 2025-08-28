@@ -75,7 +75,7 @@ namespace SalesAnalyzer.Lib.Services
                 // Doesn’t load the whole file at once.
                 // Each ReadLine() allocates only for the current line, so memory usage stays low.
                 using var reader = new StreamReader(file);
-                reader.ReadLine();
+                reader.ReadLine(); // Skip first (CSV header) line
 
                 while (reader.ReadLine() is string line)
                 {
