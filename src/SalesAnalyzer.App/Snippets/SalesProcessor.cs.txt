@@ -45,49 +45,54 @@ namespace SalesAnalyzer.Lib.Services
             }
         }
 
+        // OPTIMIZATION APPLIED:
+        // 1. Improving File I/O
+        // 2. Avoiding Large Object Heap(LOH) fragmentation
+        // 3. Reducing allocations: String pooling & interning, array reuse
+        // 4. Avoid using exceptions for control flow
         public void InitializeOptimized()
         {
             foreach (var file in Directory.GetFiles(dataPath))
             {
-                using var reader = new StreamReader(File.Open(file, FileMode.Open, FileAccess.Read));
-                string? line = reader.ReadLine();
+                // MEMORY OPTIMIZATION
+                // ReadAllText: O(file size) memory => risk of LOH fragmentation, OutOfMemoryException for large files.
+                // StreamReader: O(1) memory (it keeps only a fixed-size buffer in memory while reading from the stream) => scalable to GB - sized files.
 
-                while ((line = reader.ReadLine()) != null)
-                {
-                    var lineCols = line.Split(',');
-                    var sale = new Sale
-                    {
-                        //Branch = lineCols[0],
-                        //CustomerId = string.Equals(lineCols[1], "NULL", StringComparison.OrdinalIgnoreCase) ? null : lineCols[1],
-                        //BillTo = lineCols[2],
-                        ItemName = lineCols[3],
-                        //Category = lineCols[4],
-                        //Price = decimal.Parse(lineCols[5], CultureInfo.InvariantCulture),
-                        Quantity = int.Parse(lineCols[6]),
-                        //Total = decimal.Parse(lineCols[7], CultureInfo.InvariantCulture),
-                        Status = lineCols[8],
-                        //BillDate = DateTime.ParseExact(lineCols[9].Trim(), "yyyyMMdd", CultureInfo.InvariantCulture)
-                    };
+                // GC OPTIMIZATION
+                // ReadAllText: creates a single giant string; later substrings or splits by new line char => GC pressure.
+                // StreamReader: small line allocations only.
 
-                    if (!Branches.ContainsKey(lineCols[0]))
-                        Branches.Add(lineCols[0], new Branch(lineCols[0]));
+                // I/O PATTERN OPTIMIZATION
+                // ReadAllText: one big disk read.Efficient if file is small(fits in RAM, caching works).
+                // StreamReader: buffered sequential reads => more disk I/O calls, but avoids blocking memory.
 
-                    Branches[lineCols[0]].Sales.Add(sale);
-                }
-            }
-        }
+                // PERFORMANCE TRADE-OFF
+                // For small files(< few MB) => ReadAllText is simpler and often faster.
+                // For large files(hundreds of MBs/GBs) => StreamReader wins because it scales.
 
-        public void InitializeHighlyOptimized()
-        {
-            foreach (var file in Directory.GetFiles(dataPath))
-            {
+                // StreamReader.ReadLine() IN A LOOP
+                // Reads the file line by line using a buffer (default 1 KB or user - defined).
+                // Doesn’t load the whole file at once.
+                // Each ReadLine() allocates only for the current line, so memory usage stays low.
                 using var reader = new StreamReader(file);
                 reader.ReadLine();
 
                 while (reader.ReadLine() is string line)
                 {
+                    // Use null or valid value checks for control flow; avoid using Exceptions.
                     if (string.IsNullOrWhiteSpace(line)) continue;
 
+                    // MEMORY OPTIMIZATION => by reducing string allocations; line.Split(',') allocates a string array with one element per column.
+                    // CPU OPTIMIZATION => by avoiding unnecessary parsing of unused columns.
+                    // GC OPTIMIZATION => fewer short-lived string objects => less Gen0/ Gen1 GC activity.
+
+                    // STRING INTERNING:
+                    // 1. string.Intern Saves memory by deduplicating repeated strings.
+                    // 2. Faster equality checks(reference comparison).
+                    // TRADE-OFFS (STRING INTERNING):
+                    // 1. Interned strings stay alive for the process lifetime(no GC).
+                    // 2. Extra CPU cost for pool lookup.
+                    // 3. Bad for large numbers of unique strings(bloats memory).
                     int startIndex = 0;
                     int endIndex = 0;
                     string branchName = string.Empty;
@@ -100,20 +105,21 @@ namespace SalesAnalyzer.Lib.Services
                         endIndex = line.IndexOf(',', startIndex);
 
                         if (column == 0)
-                            branchName = line[startIndex..endIndex];
+                            branchName = string.Intern(line[startIndex..endIndex]);
 
                         if (column == 3)
-                            itemName = line[startIndex..endIndex];
+                            itemName = string.Intern(line[startIndex..endIndex]);
 
                         if (column == 6)
                             quantitiy = line[startIndex..endIndex];
 
                         if (column == 8)
-                            status = line[startIndex..endIndex];
+                            status = string.Intern(line[startIndex..endIndex]);
 
                         startIndex = endIndex + 1;
                     }
 
+                    // MEMORY OPTIMIZATION => reducing allocations by only using required properties.
                     var sale = new Sale
                     {
                         //Branch = lineCols[0],
@@ -136,52 +142,42 @@ namespace SalesAnalyzer.Lib.Services
             }
         }
 
-        public string FindLowestSellingCountItem(string branch)
+        public (string highestSellingCountItem, string lowestSellingItemCountItem) FindLowestAndHighestSellingCountItems(string branch)
         {
-            var itemsWithTotalSoldCount = Branches[branch].Sales
-                .Where(o => o.Status.Equals("COMPLETED"))
-                .GroupBy(o => new { o.ItemName })
-                .Select(g => new
+            const string NoSalesData = "No sales data";
+
+            var sales = Branches[branch].Sales.Where(o => o.Status.Equals("COMPLETED"));
+
+            if (!sales.Any())
+                return (NoSalesData, NoSalesData);
+
+            // Using Dictionary for count accumulation
+            var dictSalesTotalByItemName = new Dictionary<string, int>();
+            foreach (var sale in sales)
+            {
+                if (dictSalesTotalByItemName.ContainsKey(sale.ItemName))
+                    dictSalesTotalByItemName[sale.ItemName] += sale.Quantity;
+                else
+                    dictSalesTotalByItemName[sale.ItemName] = sale.Quantity;
+            }
+
+            string lowestSellingCountItem = NoSalesData, highestSellingCountItem = NoSalesData;
+            int lowest = int.MaxValue, highest = int.MinValue;
+
+            foreach (var kvp in dictSalesTotalByItemName)
+            {
+                if (kvp.Value < lowest)
                 {
-                    ItemName = g.Key.ItemName,
-                    TotalSales = g.Sum(o => o.Quantity)
-                });
+                    lowest = kvp.Value;
+                    lowestSellingCountItem = kvp.Key;
+                }
 
-            var lowestSellingCountItem = itemsWithTotalSoldCount.OrderBy(o => o.TotalSales).FirstOrDefault();
-
-            return lowestSellingCountItem?.ItemName ?? "No sales data";
-        }
-
-        public string FindHighestSellingCountItem(string branch)
-        {
-            var itemsWithTotalSoldCount = Branches[branch].Sales
-                .Where(o => o.Status.Equals("COMPLETED"))
-                .GroupBy(o => new { o.ItemName })
-                .Select(g => new
+                if (kvp.Value > highest)
                 {
-                    ItemName = g.Key.ItemName,
-                    TotalSales = g.Sum(o => o.Quantity)
-                });
-
-            var highestSellingCountItem = itemsWithTotalSoldCount.OrderByDescending(o => o.TotalSales).FirstOrDefault();
-
-            return highestSellingCountItem?.ItemName ?? "No sales data";
-        }
-
-        public (string highestSellingCountItem, string lowestSellingItemCountItem) GetReportsForHighestAndLowestSellingCount(string branch)
-        {
-            var itemsWithTotalSoldCountSortedDesc = Branches[branch].Sales
-                .Where(o => o.Status.Equals("COMPLETED"))
-                .GroupBy(o => new { o.ItemName })
-                .Select(g => new
-                {
-                    ItemName = g.Key.ItemName,
-                    TotalSales = g.Sum(o => o.Quantity)
-                })
-                .OrderByDescending(o => o.TotalSales);
-
-            string highestSellingCountItem = itemsWithTotalSoldCountSortedDesc.FirstOrDefault()?.ItemName ?? "No sales data";
-            string lowestSellingCountItem = itemsWithTotalSoldCountSortedDesc.LastOrDefault()?.ItemName ?? "No sales data";
+                    highest = kvp.Value;
+                    highestSellingCountItem = kvp.Key;
+                }
+            }
 
             return (highestSellingCountItem, lowestSellingCountItem);
         }

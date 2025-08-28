@@ -45,36 +45,44 @@ namespace SalesAnalyzer.Lib.Services
             }
         }
 
-        public string FindLowestSellingCountItem(string branch)
+        public (string highestSellingCountItem, string lowestSellingItemCountItem) FindLowestAndHighestSellingCountItems(string branch)
         {
-            var itemsWithTotalSoldCount = Branches[branch].Sales
-                .Where(o => o.Status.Equals("COMPLETED"))
-                .GroupBy(o => new { o.ItemName })
-                .Select(g => new
+            const string NoSalesData = "No sales data";
+
+            var sales = Branches[branch].Sales.Where(o => o.Status.Equals("COMPLETED"));
+
+            if (!sales.Any())
+                return (NoSalesData, NoSalesData);
+
+            // Using Dictionary for count accumulation
+            var dictSalesTotalByItemName = new Dictionary<string, int>();
+            foreach (var sale in sales)
+            {
+                if (dictSalesTotalByItemName.ContainsKey(sale.ItemName))
+                    dictSalesTotalByItemName[sale.ItemName] += sale.Quantity;
+                else
+                    dictSalesTotalByItemName[sale.ItemName] = sale.Quantity;
+            }
+
+            string lowestSellingCountItem = NoSalesData, highestSellingCountItem = NoSalesData;
+            int lowest = int.MaxValue, highest = int.MinValue;
+
+            foreach (var kvp in dictSalesTotalByItemName)
+            {
+                if (kvp.Value < lowest)
                 {
-                    ItemName = g.Key.ItemName,
-                    TotalSales = g.Sum(o => o.Quantity)
-                });
+                    lowest = kvp.Value;
+                    lowestSellingCountItem = kvp.Key;
+                }
 
-            var lowestSellingItem = itemsWithTotalSoldCount.OrderBy(o => o.TotalSales).FirstOrDefault();
-
-            return lowestSellingItem?.ItemName ?? "No sales data";
-        }
-
-        public string FindHighestSellingCountItem(string branch)
-        {
-            var itemsWithTotalSoldCount = Branches[branch].Sales
-                .Where(o => o.Status.Equals("COMPLETED"))
-                .GroupBy(o => new { o.ItemName })
-                .Select(g => new
+                if (kvp.Value > highest)
                 {
-                    ItemName = g.Key.ItemName,
-                    TotalSales = g.Sum(o => o.Quantity)
-                });
+                    highest = kvp.Value;
+                    highestSellingCountItem = kvp.Key;
+                }
+            }
 
-            var highestSellingItem = itemsWithTotalSoldCount.OrderByDescending(o => o.TotalSales).FirstOrDefault();
-
-            return highestSellingItem?.ItemName ?? "No sales data";
+            return (highestSellingCountItem, lowestSellingCountItem);
         }
     }
 }
