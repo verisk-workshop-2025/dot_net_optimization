@@ -1,0 +1,60 @@
+﻿using BenchmarkDotNet.Attributes;
+
+namespace SalesAnalyzer.Benchmarks
+{
+    [SimpleJob]
+    [MemoryDiagnoser]
+    public class BenchmarkDemo
+    {
+        [GlobalSetup]
+        public void Setup()
+        {
+            // Runs once before all benchmarks in the class start.
+            // Good for initializing shared state/resources that all benchmarks use.
+            // Example: Opening DB connections, loading large datasets, allocating big buffers.
+        }
+
+        [GlobalCleanup]
+        public void Cleanup()
+        {
+            // Runs once after all benchmarks finish.
+            // Good for releasing shared resources.
+            // Example: Closing DB connections, disposing file handles, freeing large arrays.
+        }
+
+        [IterationSetup]
+        public void IterationSetup()
+        {
+            // Runs before each iteration.
+            // Good for preparing fresh state needed for each iteration.
+            // Example: Allocating per - iteration memory, resetting caches, recreating test data.
+        }
+
+        [IterationCleanup]
+        public void IterationCleanup()
+        {
+            // Runs after each iteration.
+            // Good for cleaning up iteration - specific state.
+            // Example: Releasing per - iteration buffers, deleting temp files, clearing lists.
+        }
+
+
+        // The actual method under test.
+        // BenchmarkDotNet runs it many times per iteration to get accurate measurements.
+        [Benchmark(Baseline = true)]
+        public async Task<string> MethodAVersion1()
+        {
+            await Task.Delay(500); // before optimization (let's assume)
+            return "MethodAVersion1";
+        }
+
+        // The actual method under test.
+        // BenchmarkDotNet runs it many times per iteration to get accurate measurements.
+        [Benchmark]
+        public async Task<string> MethodAVersion2()
+        {
+            await Task.Delay(100); // after optimization (let's assume)
+            return "MethodAVersion2";
+        }
+    }
+}
