@@ -38,4 +38,36 @@ return primeNumbers.ToList();
     These tasks run in parallel on multiple threads (using the ThreadPool).
     The delegate (number => { ... }) is executed concurrently across threads.
     Results are written into a thread-safe ConcurrentBag<int>.
-    */
+    
+    The Task Parallel Library (TPL) decides how to split (chunk) the numbers collection into smaller segments that can be processed concurrently across multiple threads.
+
+the key idea-
+
+Work-Stealing Scheduler
+TPL uses the work-stealing algorithm for load balancing.
+Each thread gets a work queue of items (a chunk). If one thread finishes early, it can “steal” work from others.
+Chunk Size is Adaptive
+
+Unlike a fixed split (e.g., half to one thread, half to another), Parallel.ForEach dynamically decides how many items to hand out at a time.
+At the beginning, chunks are small (to avoid overscheduling).
+If iterations are quick, TPL increases chunk size to reduce overhead.
+If iterations are long-running, chunks remain smaller to balance the workload better.
+
+Default Partitioners
+If you pass an IEnumerable<T>, TPL uses a dynamic partitioner (from System.Collections.Concurrent.Partitioner) that automatically breaks the collection into chunks.
+If the collection implements IList<T> or has indexing, partitioning can be more efficient (range-based).
+If it’s just an IEnumerable, TPL pulls items lazily into chunks.
+    
+*/
+
+
+The TPL is the preferred way to write multithreaded and parallel code. 
+However, not all code is suitable for parallelization. 
+For example, if a loop performs only a small amount of work on each iteration, or it doesn't run for many iterations, then the overhead of parallelization can cause the code to run more slowly. 
+
+Takes time for: 
+•	Thread Creation/ Task Scheduling
+•	Context Switching 
+•	Synchronization Costs
+•	Cache / Memory Overheads 
+

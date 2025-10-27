@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
+using SalesAnalyzer.Lib.Models;
 using SalesAnalyzer.Lib.Services;
-using System.Text;
 
 namespace SalesAnalyzer.Benchmarks
 {
@@ -15,71 +15,29 @@ namespace SalesAnalyzer.Benchmarks
         public void Setup()
         {
             processor = new SalesProcessor();
-
-            processor.InitializeHighlyOptimized();
         }
+
+        [IterationCleanup]
+        public void IterationCleanup()
+        {
+            processor.Branches.Clear();
+        }
+
 
         [Benchmark(Baseline = true)]
-        public string InitializeUnoptimized()
+        public Dictionary<string, Branch> InitializeUnoptimized()
         {
-            var processor = new SalesProcessor();
-
             processor.InitializeUnoptimized();
 
-            return "InitializeUnoptimized";
+            return processor.Branches;
         }
 
-
         [Benchmark]
-        public string InitializeOptimized()
+        public Dictionary<string, Branch> InitializeOptimized()
         {
-            var processor = new SalesProcessor();
-
             processor.InitializeOptimized();
 
-            return "InitializeOptimized";
-        }
-
-        [Benchmark]
-        public string InitializeHighlyOptimized()
-        {
-            var processor = new SalesProcessor();
-
-            processor.InitializeHighlyOptimized();
-
-            return "InitializeHighlyOptimized";
-        }
-
-
-        [Benchmark]
-        public string Process(Baseline = true)
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("Process: -------------------");
-
-            foreach (var branch in processor.Branches)
-            {
-                var highestSellingCountItem = processor.FindHighestSellingCountItem(branch.Key);
-                var lowestSellingCountItem = processor.FindLowestSellingCountItem(branch.Key);
-                sb.AppendLine($"Branch: {branch}, HSC - {highestSellingCountItem}, LSC - {lowestSellingCountItem}");
-            }
-
-            return sb.ToString();
-        }
-
-        [Benchmark]
-        public string ProcessCombined()
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("Process: -------------------");
-
-            foreach (var branch in processor.Branches)
-            {
-                var (highestSellingCountItem, lowestSellingCountItem) = processor.GetReportsForHighestAndLowestSellingCount(branch.Key);
-                sb.AppendLine($"Branch: {branch}, HSC - {highestSellingCountItem}, LSC - {lowestSellingCountItem}");
-            }
-
-            return sb.ToString();
+            return processor.Branches;
         }
     }
 }

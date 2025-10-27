@@ -16,7 +16,7 @@ public class BatchFileProcessingDemo
     {
         for (int i = 0; i < 10; i++)
         {
-            fileGenerator.GenerateFile(1000, $"SM0{i}", filePath);
+            fileGenerator.GenerateFile(90000, $"SM0{i}", filePath);
         }
         // Possible place to optimize the file generation using parallel processing:
     }

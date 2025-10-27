@@ -13,8 +13,7 @@ processor.InitializeUnoptimized();
 var result = string.Empty;
 foreach (var branch in processor.Branches)
 {
-    var lowestSellingCountItem = processor.FindLowestSellingCountItem(branch.Key);
-    var highestSellingCountItem = processor.FindHighestSellingCountItem(branch.Key);
+    var (highestSellingCountItem, lowestSellingCountItem) = processor.FindLowestAndHighestSellingCountItems(branch.Key);
 
     result += $"{Environment.NewLine}{Environment.NewLine}";
 
