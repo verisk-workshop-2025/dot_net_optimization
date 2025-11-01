@@ -18,7 +18,12 @@ public class BatchFileProcessingDemo
         {
             fileGenerator.GenerateFile(90000, $"SM0{i}", filePath);
         }
+
         // Possible place to optimize the file generation using parallel processing:
+        // Parallel.For(0, 10, i =>
+        // {
+        //     fileGenerator.GenerateFile(90000, $"SM0{i}", filePath);
+        // });
     }
 
     public void ExecuteSequential() => sequentialFileProcessor.ProcessBranchesData(filePath, outputFilePathLeg);

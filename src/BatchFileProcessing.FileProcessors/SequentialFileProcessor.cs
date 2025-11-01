@@ -1,4 +1,5 @@
 ﻿using BatchFileProcessing.Core.Contracts;
+using System.Diagnostics;
 
 namespace BatchFileProcessing.FileProcessors;
 
@@ -6,10 +7,10 @@ public class SequentialFileProcessor : IFileProcessor
 {
     public void ProcessBranchesData(string inputDirectory, string outputDirectory)
     {
-        //var sw = Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
         ProcessBranchesDataWithSingleThread(inputDirectory, outputDirectory);
-        //sw.Stop();
-        //Console.WriteLine($"Total time With Single Thread: {sw.ElapsedMilliseconds} ms");
+        sw.Stop();
+        Console.WriteLine($"Total time With Single Thread: {sw.ElapsedMilliseconds} ms");
     }
 
     private void ProcessBranchesDataWithSingleThread(string inputDirectory, string outputDirectory)
@@ -26,10 +27,14 @@ public class SequentialFileProcessor : IFileProcessor
             try
             {
                 DateTime start = DateTime.Now;
+
                 result = new ProcessBatch().Execute(branchCode, inputDirectory, outputDirectory);
+                
                 Directory.CreateDirectory(outputDirectory);
                 string path = Path.Combine(outputDirectory, $"{branchCode}_summary.txt");
+
                 File.WriteAllText(path, result);
+
                 TimeSpan timeTaken = DateTime.Now - start;
                 Console.WriteLine($"Processed branch {branchCode} in {timeTaken.TotalMilliseconds} ms");
             }
